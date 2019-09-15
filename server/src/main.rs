@@ -1,46 +1,31 @@
 use std::io::Read;
 use std::net::{TcpListener,TcpStream,SocketAddr};
+use std::sync::mpsc::channel;
 use std::thread;
-
-struct FileInfoRequest {
-    name_len: i64,
-    name: String,
-    file_size: i64,
-    checksum_len: i64,
-    checksum: String,
-}
-
-struct FileInfoResponse {
-    success: i8,
-
-}
 
 fn main() {
     let listener = TcpListener::bind("0.0.0.0:8081").unwrap();
-
-    loop {
-        match listener.accept() {
-            Ok((stream, addr)) => handle_connection(&mut stream, addr),
+    for stream in listener.incoming() {
+        match stream {
+            Ok(stream) => handle_connection(stream),
             Err(e) => println!("{:?}", e),
         }
     }
 }
 
-fn handle_connection(stream: &mut TcpStream, addr: SocketAddr) {
-    println!("Connection from {:?}", addr);
-
-    thread::spawn({ move || read(&mut stream) });
+fn handle_connection(mut stream: TcpStream) {
+    let mut buf_filename_len = [0 as u8; 8];
+    match stream.read_exact(&mut buf_filename_len) {
+        Ok(size) => read_filename(stream, to_i64_be(buf_filename_len)),
+        Err(_) => return,
+    }
 }
 
-fn read(stream: &mut TcpStream) {
-    //@todo error handling
-    let mut buf_name_len: [u8; 8] = [0; 8];
+fn read_filename(stream: TcpStream, length: i64) {
 
-    stream.read_exact(&mut buf_name_len);
-    let name_len = to_i64be(buf_name_len);
 }
 
-fn to_i64be(bytes: [u8; 8]) -> i64 {
+fn to_i64_be(bytes: [u8; 8]) -> i64 {
     let mut val: i64 = 0;
     val += (bytes[7] as i64) >> 56;
     val += (bytes[6] as i64) >> 48;
