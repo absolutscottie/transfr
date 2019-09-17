@@ -4,8 +4,8 @@ use std::sync::mpsc::channel;
 use std::thread;
 
 struct TransfrInfo {
-    filename_length: i64,
-    filename: String,
+    file_name: String,
+    file_length: i64,
 }
 
 fn main() {
@@ -20,15 +20,31 @@ fn main() {
 
 fn handle_connection(mut stream: TcpStream) {
     let mut info = TransfrInfo {
-        fliename_length: 0,
-        filename: "",
+        file_name: "",
+        file_length: 0,
     }
 
     read_filename(&mut )
 }
 
-fn read_filename(stream: TcpStream, info: mut TransfrInfo) {
-    let mut buf = [u8, 8]; //64 bits
+fn read_filename(stream: &mut TcpStream, info: &mut TransfrInfo) -> Result<()> {
+    //buf1 represents a 64bit unsigned integer which represents the
+    //length of the name of the file being transferred.
+    let mut buf1 = [u8, 8]; //64 bits
+    stream.read_exact(&mut buf1)?;
+
+    //buf2 is created with the previously read size and is filled
+    //with bytes representing the file name
+    let mut buf2 = [u8, to_i64_be(buf1)]
+    stream.read_exact[&mut buf2]?;
+
+    info.file_name = str::from_ut8(&buf2).unwrap();
+
+    Ok(())
+}
+
+fn read_file_length(stream: &mut TcpStream) -> Result<()> {
+
 }
 
 fn to_i64_be(bytes: [u8; 8]) -> i64 {
