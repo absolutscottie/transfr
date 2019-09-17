@@ -3,6 +3,11 @@ use std::net::{TcpListener,TcpStream,SocketAddr};
 use std::sync::mpsc::channel;
 use std::thread;
 
+struct TransfrInfo {
+    filename_length: i64,
+    filename: String,
+}
+
 fn main() {
     let listener = TcpListener::bind("0.0.0.0:8081").unwrap();
     for stream in listener.incoming() {
@@ -14,15 +19,16 @@ fn main() {
 }
 
 fn handle_connection(mut stream: TcpStream) {
-    let mut buf_filename_len = [0 as u8; 8];
-    match stream.read_exact(&mut buf_filename_len) {
-        Ok(size) => read_filename(stream, to_i64_be(buf_filename_len)),
-        Err(_) => return,
+    let mut info = TransfrInfo {
+        fliename_length: 0,
+        filename: "",
     }
+
+    read_filename(&mut )
 }
 
-fn read_filename(stream: TcpStream, length: i64) {
-
+fn read_filename(stream: TcpStream, info: mut TransfrInfo) {
+    let mut buf = [u8, 8]; //64 bits
 }
 
 fn to_i64_be(bytes: [u8; 8]) -> i64 {
