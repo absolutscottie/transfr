@@ -1,36 +1,17 @@
 use std::io::Read;
 use std::net::{TcpListener,TcpStream};
 use std::thread;
-use std::io;
-use std::fmt;
-use std::string;
+
+use transfr;
 
 #[derive(Debug)]
-enum TransfrProtocolError {
-    IoError(io::Error),
-    Utf8Error(string::FromUtf8Error),
+pub struct ServerInfo {
+    pub addr: String,
+    pub port: i32,
 }
 
-impl fmt::Display for TransfrProtocolError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Protocol error!")
-    }
-}
-
-impl From<io::Error> for TransfrProtocolError {
-    fn from(error: io::Error) -> Self {
-        TransfrProtocolError::IoError(error)
-    }
-}
-
-impl From<string::FromUtf8Error> for TransfrProtocolError {
-    fn from(error: string::FromUtf8Error) -> Self {
-        TransfrProtocolError::Utf8Error(error)
-    }
-}
-
-fn main() {
-    let listener = TcpListener::bind("0.0.0.0:8081").unwrap();
+pub fn run(info: ServerInfo) {
+    let listener = TcpListener::bind(format!("{}:{}", info.addr, info.port)).unwrap();
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => new_connection(stream),
@@ -59,7 +40,7 @@ fn handle_connection(stream: TcpStream) {
     };
 }
 
-fn read_file_name(mut stream: &TcpStream) -> Result<String, TransfrProtocolError> {
+fn read_file_name(mut stream: &TcpStream) -> Result<String, transfr::protocol::Error> {
     let mut buf = [0 as u8; 8];
     stream.read_exact(&mut buf)?;
 
@@ -73,7 +54,7 @@ fn read_file_name(mut stream: &TcpStream) -> Result<String, TransfrProtocolError
     Ok(filename)
 }
 
-fn read_file_length(mut stream: &TcpStream) -> Result<u64, TransfrProtocolError> {
+fn read_file_length(mut stream: &TcpStream) -> Result<u64, transfr::protocol::Error> {
     let mut buf = [0 as u8; 8];
     stream.read_exact(&mut buf)?;
     Ok(to_u64_be(buf))

@@ -1,0 +1,8 @@
+[package]
+name = "transfr"
+version = "0.1.0"
+authors = ["Scott Lawson <lawson.scott@gmail.com>"]
+
+[[bin]]
+name = "transfr_server"
+path = "src/main.rs"
