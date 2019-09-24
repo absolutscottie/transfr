@@ -1,6 +1,11 @@
 # transfr
-Transfr is a family of applications written with Rust to transfer files quickly from oneplace to another using UDP for transfer and TCP for coordination.
+Transfr is a library for transferring files quickly between a client and server. Transfer is coordinated over a TCP connection and data is transferred via several UDP connections concurrently. Transferring data over UDP removes the overhead and throughput issues associated with TCP while maintaining some amount of transfer guarantees by coordinating over TCP.
 
+## To Do Items
+- [ ] Document protocol
+- [ ] Server Implementation
+- [ ] Client Implementation
+- [ ] Testing
 
 ## transfr protocol
 1. Handshake
