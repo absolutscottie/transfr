@@ -1,21 +1,11 @@
+use std::io::Read;
 use std::net::TcpStream;
 use transfr::protocol;
 use transfr::protocol::{Error, VERSION_BYTES, FILE_LENGTH_BYTES};
 
-pub fn setup_transfer(mut stream: &TcpStream) -> Result<(String, i64), Error> {
-    let mut filename = "".to_string();
-    match read_file_name(&stream) {
-        Ok(f) => filename = f,
-        Err(e) => println!("Error reading filename: {}!", e),
-    };
-
-    let mut file_length = 0 as u64;
-    match read_file_length(&stream) {
-        Ok(len) => file_length = len,
-        Err(e) => {
-            println!("Error reading file length: {}!", e);
-        }
-    };
+pub fn setup_transfer(mut stream: &TcpStream) -> Result<(String, u64), Error> {
+    let filename = read_file_name(&stream)?;
+    let file_length = read_file_length(&stream)?;
 
     Ok((filename, file_length))
 }

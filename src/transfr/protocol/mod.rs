@@ -9,14 +9,14 @@ mod server_setup;
 //mod client_setup;
 
 //Handshake constants
-const VERSION_BYTES: i32 = 8;
-const CLIENT_ID_BYTES: i32 = 32;
-const NONCE_BYTES: i32 = 32;
-const CNONCE_BYTES: i32 = 32;
+const VERSION_BYTES: usize = 8;
+const CLIENT_ID_BYTES: usize = 32;
+const NONCE_BYTES: usize = 32;
+const CNONCE_BYTES: usize = 32;
 
 //transfer setup constants
-const FILE_NAME_BYTES: i32 = 8;
-const FILE_LENGTH_BYTES: i32 = 8;
+const FILE_NAME_BYTES: usize = 8;
+const FILE_LENGTH_BYTES: usize = 8;
 
 
 #[derive(Debug)]
