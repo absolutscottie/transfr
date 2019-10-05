@@ -2,10 +2,10 @@ use std::io;
 use std::fmt;
 use std::string;
 
-mod server_handshake;
+pub mod server_handshake;
 //mod client_handshake;
 
-mod server_setup;
+pub mod server_setup;
 //mod client_setup;
 
 //Handshake constants
